@@ -11,3 +11,10 @@ How do public holidays work
 checklist
     o ability to set rate for a specific day eg. pubhol
     o ability for jamie to choose what month is currently being shown
+    o totalling has broken
+    x form populated from database
+    o Get rates from db
+
+Things I've learned
+    - need to be strict with coming up with object names, monthbill/bill etc, carer in some places, name in others
+        This could be addressed with some whiteboarding of entities
