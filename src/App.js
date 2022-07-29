@@ -1,15 +1,15 @@
 import './App.css';
-import { HoursInputRow as HoursInputRow } from './singleBillForm';
-import { getBillsByCarerName, getPaymentLists, getRates } from './firestore';
-import { formatDateToString, getAllDaysInMonth} from './Dates'
 import { MonthBillsForm } from './monthBillsForm';
 
 
 function App() {
+  const rates = { weekday: 5.32, weekend: 10.99 }
+  const name = "Mark"
   return (
     <div className="App">
       <header className="App-header">
-            <MonthBillsForm name="Jerry" rate="5"></MonthBillsForm>
+        <h2>{name}'s monthly bill</h2>
+        <MonthBillsForm name={name} rates={rates}></MonthBillsForm>
       </header>
     </div>
   );
