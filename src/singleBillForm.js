@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 
 export function HoursInputRow(props) {
 
-    const [total, setTotal] = useState("0")
+    const [total, setTotal] = useState(0.0)
 
     const onChange = (event) => {
         event.preventDefault()
@@ -20,6 +20,11 @@ export function HoursInputRow(props) {
         setTotal(event.target.value * props.rate)
     }
 
+    useEffect(() => {
+        setTotal(props.monthHours[props.date]["hours"] * props.rate)
+              // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.monthHours])
+
     return (
         <div>
             <div style={{display:"grid", gridTemplateColumns:"1fr 1fr 1fr 1fr"}}>
@@ -32,7 +37,7 @@ export function HoursInputRow(props) {
                     />
                 </h3>
                 <p>£{props.rate}</p>
-                <p>Day Total: £{total}</p>
+                <p>Day Total: £{total.toFixed(2)}</p>
             </div>
         </div>
     )
