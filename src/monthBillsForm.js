@@ -1,12 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { createMonthBill } from "./firestore";
 import { getAllDaysInMonth, getMonthYearString } from "./Dates";
 import { HoursInputRow } from "./singleBillForm";
 import { formatDateToString } from "./Dates";
-import { getAllMonthlyBills } from "./firestore";
 import { ExpensesInputRow } from "./expensesInputRow";
-
+import { getBillForCarerMonth } from "./firestore";
 
 
 const createMonthHoursJson = (dates, rates) => {
@@ -24,14 +23,16 @@ const createMonthHoursJson = (dates, rates) => {
             rate: rate
         }
     });
-    console.log("here")
     return monthHoursRateDict;
 }
 
 function getTotalHoursPriceForMonth(monthHoursRatesDict) {
     var total = 0;
     for (const [key, value] of Object.entries(monthHoursRatesDict)) {
-        total = total + (value["rate"] * value["hours"])
+        const numHours = parseFloat(value.hours)
+        if (!isNaN(numHours)) {
+            total = total + (value["rate"] * numHours)
+        }
     }
     return total
 }
@@ -42,32 +43,51 @@ function getTotalPriceForMonth(monthHoursRateDict, expensesTotal) {
     return et + ht;
 }
 
-export const MonthBillsForm = (e, props) => {
+function getMonthHoursFromBill(bill) {
+    const monthHours = {}
+    Object.assign(monthHours, bill)
+    delete monthHours.expenses
+    return monthHours
+}
+
+export const MonthBillsForm = (props) => {
     const [expenses, setExpenses] = useState("")
-    const [total, setTotal] = useState("")
-    const rates = { weekday: 5.32, weekend: 10.99 }
+    const [total, setTotal] = useState(0.0)
     var now = new Date();
     let dates = getAllDaysInMonth(now.getFullYear(), now.getMonth())
-    const [monthHours, setMonthHours] = useState(createMonthHoursJson(dates, rates));
+    const [monthHours, setMonthHours] = useState(createMonthHoursJson(dates, props.rates));
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        createMonthBill(monthHours, expenses, getMonthYearString(now), "Jerry")
+        createMonthBill(monthHours, expenses, getMonthYearString(now), props.name)
         alert("Bill created successfully")
     }
 
+    useEffect(() => {
+        getBillForCarerMonth(props.name, getMonthYearString(now))
+            .then(
+                (data) => {
+                    if (data.id) {
+                        setMonthHours(getMonthHoursFromBill(data.data))
+                        setExpenses(data.data.expenses)
+                    }
+                }
+            )
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.name])
+
     return (
         <div style={{ clear: "both" }}>
-            <div style={{display:"grid", gridTemplateColumns:"1fr 1fr 1fr 1fr"}}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr" }}>
                 <h3>Date</h3>
                 <h3>Hours</h3>
                 <h3>Rate</h3>
-                </div>
+            </div>
             <form onSubmit={handleSubmit}>
                 {dates.map((date) => {
                     const formattedDate = formatDateToString(date)
                     return (
-                        <div style={{clear:"both"}}>
+                        <div style={{ clear: "both" }}>
                             <HoursInputRow
                                 monthHours={monthHours}
                                 setMonthHours={setMonthHours}
@@ -77,12 +97,13 @@ export const MonthBillsForm = (e, props) => {
                                 rate={monthHours[formattedDate]["rate"]}>
                             </HoursInputRow>
                         </div>
-                )})}
+                    )
+                })}
                 <ExpensesInputRow expensesTotal={expenses} setExpenses={setExpenses}></ExpensesInputRow>
                 <input type="submit"></input>
             </form>
-            <button onClick={() => setTotal(getTotalPriceForMonth(monthHours, expenses))}>Bills</button>
-            <h3>Total: {total}</h3>
+            <button onClick={() => setTotal(getTotalPriceForMonth(monthHours, expenses))}>Calculate Total</button>
+            <h3>Total: {total.toFixed(2)}</h3>
         </div>
     )
 }
