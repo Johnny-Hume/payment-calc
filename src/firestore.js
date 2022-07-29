@@ -1,19 +1,35 @@
 import { db } from "./firebase-config";
-import { doc, addDoc, setDoc, collection, getDocs } from "firebase/firestore/lite";
+import { doc, query, where, addDoc, setDoc, collection, getDoc, getDocs } from "firebase/firestore";
+
+
+export async function getBillForCarerMonth(name, month) {
+    const docRef = doc(db, month, name);
+    const docSnap = await getDoc(docRef)
+    var bill = {id: null, data: {}};
+    if (docSnap.exists()) {
+        bill.id = docSnap.id
+        bill.data = docSnap.data()
+    } else {
+        console.error("No such document!");
+    }
+    return bill
+}
 
 export async function createMonthBill(monthHours, expenses, month, name) {
     try {
-        const data = Object.assign({}, monthHours, {expenses: expenses})
-        const docRef = await setDoc(doc(db, month, name), data)
+        const data = Object.assign({}, monthHours, { expenses: expenses })
+        await setDoc(doc(db, month, name), data)
     } catch (e) {
         console.error("Error adding document: ", e);
     }
 }
 
-export async function getAllMonthlyBills(monthYear){
+export async function getAllMonthlyBills(monthYear) {
+    console.log(monthYear)
     const bills = getDocsInCollection(monthYear)
     console.log(bills)
 }
+
 
 async function getRatesDocs() {
     const rates = getDocsInCollection('rates')
