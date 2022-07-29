@@ -15,6 +15,19 @@ export async function getBillForCarerMonth(name, month) {
     return bill
 }
 
+export async function getNameById(nameId){
+    const docRef = doc(db, "names", nameId)
+    const docSnap = await getDoc(docRef)
+    var name = null
+    if(docSnap.exists()){
+        name = docSnap.data().name
+    }
+    else{
+        console.error("No such document")
+    }
+    return name
+}
+
 export async function createMonthBill(monthHours, expenses, month, name) {
     try {
         const data = Object.assign({}, monthHours, { expenses: expenses })

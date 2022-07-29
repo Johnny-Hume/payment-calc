@@ -37,7 +37,7 @@ export function HoursInputRow(props) {
                     />
                 </h3>
                 <p>£{props.rate}</p>
-                <p>Day Total: £{total.toFixed(2)}</p>
+                <p>£{total.toFixed(2)}</p>
             </div>
         </div>
     )

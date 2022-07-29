@@ -51,7 +51,7 @@ function getMonthHoursFromBill(bill) {
 }
 
 export const MonthBillsForm = (props) => {
-    const [expenses, setExpenses] = useState("")
+    const [expenses, setExpenses] = useState(0.0)
     const [total, setTotal] = useState(0.0)
     var now = new Date();
     let dates = getAllDaysInMonth(now.getFullYear(), now.getMonth())
@@ -82,6 +82,7 @@ export const MonthBillsForm = (props) => {
                 <h3>Date</h3>
                 <h3>Hours</h3>
                 <h3>Rate</h3>
+                <h3>Day Total</h3>
             </div>
             <form onSubmit={handleSubmit}>
                 {dates.map((date) => {
@@ -93,7 +94,6 @@ export const MonthBillsForm = (props) => {
                                 setMonthHours={setMonthHours}
                                 hours={monthHours[formattedDate]["hours"]}
                                 date={formattedDate}
-                                name="Jerry"
                                 rate={monthHours[formattedDate]["rate"]}>
                             </HoursInputRow>
                         </div>

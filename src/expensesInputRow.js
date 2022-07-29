@@ -6,7 +6,7 @@ export function ExpensesInputRow(props) {
 
     const onChange = (event) => {
         event.preventDefault()
-        props.setExpenses(parseFloat(event.target.value))
+        props.setExpenses(event.target.value)
     }
 
     return (

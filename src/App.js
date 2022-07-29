@@ -1,15 +1,18 @@
 import './App.css';
-import { MonthBillsForm } from './monthBillsForm';
+import { CarerBillingPage } from './CarerBillingPage';
+import { BrowserRouter, Routes, Route, useParams } from 'react-router-dom'
 
 
 function App() {
-  const rates = { weekday: 5.32, weekend: 10.99 }
-  const name = "Mark"
+  const nameIds = ["py8BefwPq8", "iuTcz1Kgjn", "5Q9wneJOST", "ff9lbEHFHx", "PYQACrShek"]
   return (
     <div className="App">
       <header className="App-header">
-        <h2>{name}'s monthly bill</h2>
-        <MonthBillsForm name={name} rates={rates}></MonthBillsForm>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/:nameId" element={<CarerBillingPage/>} />
+          </Routes>
+        </BrowserRouter>
       </header>
     </div>
   );
