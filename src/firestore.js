@@ -15,6 +15,20 @@ export async function getBillForCarerMonth(name, month) {
     return bill
 }
 
+export async function getRates(){
+    const docRef = doc(db, "rates", "rates")
+    const docSnap = await getDoc(docRef)
+    var rates = {weekday: null, weekend: null, pubHol: null};
+    if (docSnap.exists()) {
+        rates.weekday = docSnap.data().weekday
+        rates.weekend = docSnap.data().weekend
+        rates.pubHol = docSnap.data().pubhol
+    } else {
+        console.error("No such document!");
+    }
+    return rates
+
+}
 export async function getNameById(nameId){
     const docRef = doc(db, "names", nameId)
     const docSnap = await getDoc(docRef)
@@ -41,25 +55,6 @@ export async function getAllMonthlyBills(monthYear) {
     console.log(monthYear)
     const bills = getDocsInCollection(monthYear)
     console.log(bills)
-}
-
-
-async function getRatesDocs() {
-    const rates = getDocsInCollection('rates')
-    return rates
-}
-
-export async function getRates() {
-    const rates = {
-        weekday: null,
-        weekend: null,
-        pubHol: null
-    }
-    const ratesDocs = getRatesDocs();
-    rates.weekday = (await ratesDocs).at(0)["WeekdayRate"];
-    rates.weekend = (await ratesDocs).at(0)["WeekendRate"];
-    rates.pubHol = (await ratesDocs).at(0)["PubHolRate"];
-    return rates
 }
 
 async function getDocsInCollection(collectionName) {

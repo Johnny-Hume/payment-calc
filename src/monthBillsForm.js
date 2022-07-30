@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { createMonthBill } from "./firestore";
+import { createMonthBill, getRates } from "./firestore";
 import { getAllDaysInMonth, getMonthYearString } from "./Dates";
 import { HoursInputRow } from "./singleBillForm";
 import { formatDateToString } from "./Dates";
@@ -55,7 +55,8 @@ export const MonthBillsForm = (props) => {
     const [total, setTotal] = useState(0.0)
     var now = new Date();
     let dates = getAllDaysInMonth(now.getFullYear(), now.getMonth())
-    const [monthHours, setMonthHours] = useState(createMonthHoursJson(dates, props.rates));
+    const [rates, setRates] = useState({weekday:0, weekend:0, pubHol:0})
+    const [monthHours, setMonthHours] = useState(createMonthHoursJson(dates, rates));
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -71,9 +72,22 @@ export const MonthBillsForm = (props) => {
                         setMonthHours(getMonthHoursFromBill(data.data))
                         setExpenses(data.data.expenses)
                     }
+                    else{
+                        setMonthHours(createMonthHoursJson(dates, rates))
+                    }
                 }
             )
         // eslint-disable-next-line react-hooks/exhaustive-deps
+        getRates().then(
+            (data) => {
+                setRates(prevState => ({
+                    ...prevState,
+                    weekday: data.weekday,
+                    weekend: data.weekend,
+                    pubHol: data.pubHol
+                }))
+            }
+        )
     }, [props.name])
 
     return (
@@ -87,6 +101,7 @@ export const MonthBillsForm = (props) => {
             <form onSubmit={handleSubmit}>
                 {dates.map((date) => {
                     const formattedDate = formatDateToString(date)
+                    console.log(monthHours[formattedDate]["rate"])
                     return (
                         <div style={{ clear: "both" }}>
                             <HoursInputRow
