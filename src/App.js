@@ -1,6 +1,8 @@
 import './App.css';
-import { CarerBillingPage } from './CarerBillingPage';
+import { CarerBillingPage } from './Carer/CarerBillingPage';
 import { BrowserRouter, Routes, Route, useParams } from 'react-router-dom'
+import { SingleCarerBill } from './Manager/SingleCarerBill';
+import { AllCarerBills } from './Manager/AllCarerBills';
 
 
 function App() {
@@ -11,6 +13,8 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/:nameId" element={<CarerBillingPage/>} />
+            <Route path="/billing" element={<AllCarerBills/>} />
+            <Route path="/billing/single" element={<SingleCarerBill/>} />
           </Routes>
         </BrowserRouter>
       </header>

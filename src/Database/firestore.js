@@ -52,9 +52,10 @@ export async function createMonthBill(monthHours, expenses, month, name) {
 }
 
 export async function getAllMonthlyBills(monthYear) {
-    console.log(monthYear)
-    const bills = getDocsInCollection(monthYear)
-    console.log(bills)
+    const col = collection(db, monthYear);
+    const colSnapshot = await getDocs(col);
+    const docs = colSnapshot.docs.map(doc => { return {name: doc.id, data: doc.data()}});
+    return docs
 }
 
 async function getDocsInCollection(collectionName) {

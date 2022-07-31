@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getNameById, getRates } from "./firestore";
+import { getNameById, getRates } from "../Database/firestore";
 import { MonthBillsForm } from "./monthBillsForm";
 import { useParams } from "react-router-dom";
 
