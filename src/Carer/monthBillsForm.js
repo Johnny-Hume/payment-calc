@@ -11,16 +11,9 @@ import { getBillForCarerMonth } from "../Database/firestore";
 export const createMonthHoursJson = (dates, rates) => {
     var monthHoursRateDict = {};
     dates.forEach(date => {
-        let rate;
-        if (date.getDay() < 5) {
-            rate = rates.weekday
-        }
-        else {
-            rate = rates.weekend
-        }
         monthHoursRateDict[formatDateToString(date)] = {
-            hours: "",
-            rate: rate
+            hours: 0,
+            rate: 0
         }
     });
     return monthHoursRateDict;
@@ -41,6 +34,29 @@ export function getTotalPriceForMonth(monthHoursRateDict, expensesTotal) {
     const et = parseFloat(expensesTotal) || 0.00
     const ht = parseFloat(getTotalHoursPriceForMonth(monthHoursRateDict));
     return et + ht;
+}
+
+const populateMonthHours = (dates, monthHours, bill) => {
+    dates.forEach(date => {
+        const formattedDate = formatDateToString(date)
+        monthHours[formattedDate]["hours"] = bill[formattedDate]["hours"]
+    })
+    return monthHours
+}
+
+const populateRates = (dates, monthHours, rates) => {
+    let rate
+    dates.forEach(date => {
+        const formattedDate = formatDateToString(date)
+        if (date.getDay() < 5) {
+            rate = rates.weekday
+        }
+        else {
+            rate = rates.weekend
+        }
+        monthHours[formattedDate]["rate"] = rate
+    })
+    return monthHours
 }
 
 export function getMonthHoursFromBill(bill) {
@@ -69,7 +85,7 @@ export const MonthBillsForm = (props) => {
             .then(
                 (data) => {
                     if (data.id) {
-                        setMonthHours(getMonthHoursFromBill(data.data))
+                        setMonthHours(getMonthHoursFromBill(populateMonthHours(dates, monthHours, data.data)))
                         setExpenses(data.data.expenses)
                     }
                     else{
@@ -87,6 +103,10 @@ export const MonthBillsForm = (props) => {
                 }))
             }
         )
+        .then(
+            populateRates(dates, monthHours, rates)
+        )
+        console.log(monthHours)
     }, [props.name])
 
     useEffect(() => {

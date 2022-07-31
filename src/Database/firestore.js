@@ -15,6 +15,15 @@ export async function getBillForCarerMonth(name, month) {
     return bill
 }
 
+export async function updateRates(rates){
+    try {
+        await setDoc(doc(db, "rates", "rates"), rates)
+    } catch (e) {
+        console.error("Error adding document: ", e);
+    }
+
+}
+
 export async function getRates(){
     const docRef = doc(db, "rates", "rates")
     const docSnap = await getDoc(docRef)
@@ -57,6 +66,7 @@ export async function getAllMonthlyBills(monthYear) {
     const docs = colSnapshot.docs.map(doc => { return {name: doc.id, data: doc.data()}});
     return docs
 }
+
 
 async function getDocsInCollection(collectionName) {
     const col = collection(db, collectionName);

@@ -3,6 +3,7 @@ import { CarerBillingPage } from './Carer/CarerBillingPage';
 import { BrowserRouter, Routes, Route, useParams } from 'react-router-dom'
 import { SingleCarerBill } from './Manager/SingleCarerBill';
 import { AllCarerBills } from './Manager/AllCarerBills';
+import { ControlCenter } from './Manager/ControlCenter';
 
 
 function App() {
@@ -13,7 +14,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/:nameId" element={<CarerBillingPage/>} />
-            <Route path="/billing" element={<AllCarerBills/>} />
+            <Route path="/control" element={<ControlCenter/>} />
             <Route path="/billing/single" element={<SingleCarerBill/>} />
           </Routes>
         </BrowserRouter>
