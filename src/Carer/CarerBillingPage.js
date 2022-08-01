@@ -16,7 +16,7 @@ export const CarerBillingPage = (props) => {
     return (
         <div style={{ clear: "both" }}>
             <h2>{name}'s monthly bill</h2>
-            <MonthBillsForm name={name}></MonthBillsForm>
+            <MonthBillsForm nameId={nameId}></MonthBillsForm>
         </div>
     )
 }

@@ -35,24 +35,29 @@ export const UpdateRateForm = (props) => {
 
     const handleSubmit = (event) => {
         event.preventDefault()
+        alert("Submitted\nClick Ok to save rates")
         updateRates(rates)
     }
 
     return (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}>
+        <div>
+        {/* <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}> */}
+        <h3>Rates</h3>
             <form onSubmit={handleSubmit}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}>
                 <p>Weekday rate</p>
+                <p>Weekend rate</p>
                 <input
                     type="text"
                     value={rates.weekday}
                     onChange={(e) => onChangeWeekday(e)}
                 />
-                <p>Weekend rate</p>
                 <input
                     type="text"
                     value={rates.weekend}
                     onChange={(e) => onChangeWeekend(e)}
                 />
+                </div>
                 <input type={"submit"}></input>
             </form>
         </div>

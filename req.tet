@@ -12,7 +12,9 @@ checklist
     o ability to set rate for a specific day eg. pubhol
     o automatic public holiday checker
     o ability for jamie to choose what month is currently being shown
-    o ability to add new carers by jamie
+    o change control page to use updated rates rather than saved
+    x ability to add new carers by jamie
+    x ability for jamie to update rates
     x totalling has broken
     x form populated from database
     x Get rates from db

@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react"
-import { getAllMonthlyBills } from "../Database/firestore"
-import { getMonthYearString } from "../Utils/Dates"
-import { monthlyBill } from "../Domain/bill"
 import { createMonthHoursJson, getMonthHoursFromBill, getTotalPriceForMonth } from "../Carer/monthBillsForm"
 import { formatDateToString } from "../Utils/Dates"
-import { getAllDaysInMonth } from "../Utils/Dates"
+import { getNameById } from "../Database/firestore"
 
 
 const calcTotal = (hours, rate) => {
@@ -17,12 +14,18 @@ const calcTotal = (hours, rate) => {
 
 export const SingleCarerBill = (props) => {
 
-    const name = props.monthlyBill["name"]
     const monthlyBill = props.monthlyBill["data"]
+    const [name, setName] = useState("")
+
+    useEffect(() => {
+        getNameById(props.monthlyBill["id"])
+        .then((name) => setName(name, console.log(name)))
+    }, [props.monthlyBill])
 
     return (
         <div>
-            <h3>{name}</h3>
+            <h3>Name: {name}</h3>
+            <h3>CarerId: {props.monthlyBill["id"]}</h3>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr" }}>
                 <p>Date</p>
                 <p>Hours</p>
@@ -44,8 +47,8 @@ export const SingleCarerBill = (props) => {
             }
 
             )}
-            <p>Expenses: £{monthlyBill["expenses"]}</p>
-            <h3>{name} Total: £{getTotalPriceForMonth(getMonthHoursFromBill(props.monthlyBill["data"]))}</h3>
+            <p>Expenses: {monthlyBill["expenses"]}</p>
+            <h3>{props.name} Total: {getTotalPriceForMonth(getMonthHoursFromBill(props.monthlyBill["data"]))}</h3>
 
         </div>
     )

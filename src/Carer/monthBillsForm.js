@@ -16,6 +16,7 @@ export const createMonthHoursJson = (dates, rates) => {
             rate: 0
         }
     });
+    monthHoursRateDict["expenses"] = 0
     return monthHoursRateDict;
 }
 
@@ -44,7 +45,7 @@ const populateMonthHours = (dates, monthHours, bill) => {
     return monthHours
 }
 
-const populateRates = (dates, monthHours, rates) => {
+export const populateRates = (dates, monthHours, rates) => {
     let rate
     dates.forEach(date => {
         const formattedDate = formatDateToString(date)
@@ -71,24 +72,24 @@ export const MonthBillsForm = (props) => {
     const [total, setTotal] = useState(0.0)
     var now = new Date();
     let dates = getAllDaysInMonth(now.getFullYear(), now.getMonth())
-    const [rates, setRates] = useState({weekday:0, weekend:0})
+    const [rates, setRates] = useState({ weekday: 0, weekend: 0 })
     const [monthHours, setMonthHours] = useState(createMonthHoursJson(dates, rates));
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        createMonthBill(monthHours, expenses, getMonthYearString(now), props.name)
-        alert("Bill created successfully")
+        alert("Submitted \nClick Ok to save changes")
+        createMonthBill(monthHours, expenses, getMonthYearString(now), props.nameId)
     }
 
     useEffect(() => {
-        getBillForCarerMonth(props.name, getMonthYearString(now))
+        getBillForCarerMonth(props.nameId, getMonthYearString(now))
             .then(
                 (data) => {
                     if (data.id) {
                         setMonthHours(getMonthHoursFromBill(populateMonthHours(dates, monthHours, data.data)))
                         setExpenses(data.data.expenses)
                     }
-                    else{
+                    else {
                         setMonthHours(createMonthHoursJson(dates, rates))
                     }
                 }
@@ -101,13 +102,10 @@ export const MonthBillsForm = (props) => {
                     weekday: data.weekday,
                     weekend: data.weekend,
                 }))
+                populateRates(dates, monthHours, data)
             }
         )
-        .then(
-            populateRates(dates, monthHours, rates)
-        )
-        console.log(monthHours)
-    }, [props.name])
+    }, [props.nameId])
 
     useEffect(() => {
         setTotal(getTotalPriceForMonth(monthHours, expenses))

@@ -13,9 +13,8 @@ function App() {
       <header className="App-header">
         <BrowserRouter>
           <Routes>
-            <Route path="/:nameId" element={<CarerBillingPage/>} />
+            <Route path="/billing/:nameId" element={<CarerBillingPage/>} />
             <Route path="/control" element={<ControlCenter/>} />
-            <Route path="/billing/single" element={<SingleCarerBill/>} />
           </Routes>
         </BrowserRouter>
       </header>
