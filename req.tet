@@ -1,18 +1,18 @@
-30 rows with date beside, no entering name
-jamie to put in rate for days
-day total
 
 questions:
 How do rates work? Does it change based on time of day or by weekend/weekday?
     auto fill weekday/weekend rate and manually update days for pub holidays etc.
-How do public holidays work
+
+What holidays do they get off/paid more
 
 
 checklist
-    o ability to set rate for a specific day eg. pubhol
-    o automatic public holiday checker
-    o ability for jamie to choose what month is currently being shown
-    o change control page to use updated rates rather than saved
+    o holidays
+    x update db rules
+    x enter should not submit bill
+    x change control page to use updated rates rather than saved
+    x ability for jamie to choose what month is currently being shown
+    x automatic public holiday checker
     x ability to add new carers by jamie
     x ability for jamie to update rates
     x totalling has broken
@@ -22,3 +22,6 @@ checklist
 Things I've learned
     - need to be strict with coming up with object names, monthbill/bill etc, carer in some places, name in others
         This could be addressed with some whiteboarding of entities
+    - useState and useEffect for rerendering of components
+    - using .then with async functions
+    - database security rules

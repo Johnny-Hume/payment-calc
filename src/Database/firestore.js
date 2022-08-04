@@ -1,5 +1,5 @@
 import { db } from "./firebase-config";
-import { doc, query, where, addDoc, setDoc, collection, getDoc, getDocs } from "firebase/firestore";
+import { doc, query, where, addDoc, setDoc, collection, getDoc, getDocs, connectFirestoreEmulator } from "firebase/firestore";
 import { useState } from "react";
 
 
@@ -78,17 +78,32 @@ export async function createMonthBill(monthHours, expenses, month, name) {
     }
 }
 
+
+export async function updateDate(date) {
+    try {
+        await setDoc(doc(db, "chosenDate", "chosenDate"), {chosenDate: date})
+    } catch (e) {
+        console.error("Error adding document: ", e);
+    }
+}
+
+export async function getChosenDate() {
+    const docRef = doc(db, "chosenDate", "chosenDate")
+    const docSnap = await getDoc(docRef)
+    var chosenDate = {chosenDate: new Date()}
+    if (docSnap.exists()) {
+        chosenDate.chosenDate = docSnap.data().chosenDate
+    } else {
+        console.error("No such document!");
+    }
+    return chosenDate
+
+}
+
 export async function getAllMonthlyBills(monthYear) {
     const col = collection(db, monthYear);
     const colSnapshot = await getDocs(col)
-    const docs = colSnapshot.docs.map(doc => { return { id: doc.id, data: doc.data() } });
-    return docs
-}
-
-
-async function getDocsInCollection(collectionName) {
-    const col = collection(db, collectionName);
-    const colSnapshot = await getDocs(col);
-    const docs = colSnapshot.docs.map(doc => doc.data());
+    const docs = colSnapshot.docs.map(doc => {
+         return { id: doc.id, data: doc.data() } });
     return docs
 }

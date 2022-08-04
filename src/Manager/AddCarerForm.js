@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { Link } from "react-router-dom"
 import { createMonthHoursJson, populateRates } from "../Carer/monthBillsForm"
 import { createCarerBillDoc, createCarerNameDoc, getRates } from "../Database/firestore"
 import { formatDateToString } from "../Utils/Dates"
@@ -12,6 +13,9 @@ export const AddCarerForm = (props) => {
     useEffect(() => {
         setMonthHours(populateRates(props.dates, monthHours, props.rates))
     })
+
+    useEffect(() => {
+    }, [carerRef])
 
     const handleNameChange = (event) => {
         event.preventDefault()
@@ -28,6 +32,7 @@ export const AddCarerForm = (props) => {
             )
     }
 
+    const url = window.location.href.split("/")[2]
 
     return (
         <div>
@@ -38,13 +43,14 @@ export const AddCarerForm = (props) => {
                     <p>Name</p>
                     <input
                         type="text"
+                        style={{ fontSize: "16px" }}
                         value={name}
                         onChange={(e) => handleNameChange(e)}
                     />
                 </div>
                 <input type={"submit"}></input>
             </form>
-            <h3>New Carer ID: {carerRef}</h3>
+            {carerRef != "" ?  <Link to={"/billing/" + carerRef} style={{color:"deepskyblue"}}>Go To Carer Page</Link> : <p></p>}
         </div>
     )
 }

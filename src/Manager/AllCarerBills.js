@@ -1,7 +1,7 @@
 import { SingleCarerBill } from "./SingleCarerBill";
 import { getAllDaysInMonth } from "../Utils/Dates";
 import { useState, useEffect } from "react";
-import { createMonthHoursJson } from "../Carer/monthBillsForm";
+import { createMonthHoursJson, populateRates } from "../Carer/monthBillsForm";
 import { getAllMonthlyBills, getNameById } from "../Database/firestore";
 import { getMonthYearString } from "../Utils/Dates";
 import { namedQuery } from "firebase/firestore";
@@ -11,22 +11,12 @@ export const AllCarerBills = (props) => {
     const [monthlyBills, setMonthlyBills] = useState([{ id: "", data: createMonthHoursJson(props.dates, props.rates) }])
 
     useEffect(() => {
-        getAllMonthlyBills(getMonthYearString(new Date())).then(
+        getAllMonthlyBills(getMonthYearString(props.chosenDate)).then(
             (data) => {
                 setMonthlyBills(data)
             }
         )
-    }, [])
-
-    // useEffect(() => {
-    //     if (hasBillsUpdated) {
-    //         monthlyBills.forEach(bill => {
-    //             getNameById(bill["id"]).then((name) => {
-    //                 setNames([...names, {id: bill["id"], name: name}])
-    //             })
-    //         })
-    //     }
-    // }, [monthlyBills])
+    }, [props.chosenDate])
 
     return (
         <div>

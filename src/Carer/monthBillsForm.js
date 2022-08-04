@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { createMonthBill, getRates } from "../Database/firestore";
-import { getAllDaysInMonth, getMonthYearString } from "../Utils/Dates";
+import { createCarerBillDoc } from "../Database/firestore";
+import { formatDateToDayDDMonth, formateDateToHolidayFormat, getAllDaysInMonth, getMonthYearString } from "../Utils/Dates";
 import { HoursInputRow } from "./singleBillForm";
 import { formatDateToString } from "../Utils/Dates";
 import { ExpensesInputRow } from "./expensesInputRow";
@@ -45,15 +46,21 @@ const populateMonthHours = (dates, monthHours, bill) => {
     return monthHours
 }
 
+function isHoliday(date) {
+    const holidays = require("../holidays.json")["northern-ireland"].events
+    const holidayFormattedDate = formateDateToHolidayFormat(date)
+    return holidays.some(e => e.date == holidayFormattedDate)
+
+}
 export const populateRates = (dates, monthHours, rates) => {
     let rate
     dates.forEach(date => {
         const formattedDate = formatDateToString(date)
-        if (date.getDay() < 5) {
-            rate = rates.weekday
+        if (isHoliday(date) || date.getDay() > 4) {
+            rate = rates.weekend
         }
         else {
-            rate = rates.weekend
+            rate = rates.weekday
         }
         monthHours[formattedDate]["rate"] = rate
     })
@@ -70,19 +77,20 @@ export function getMonthHoursFromBill(bill) {
 export const MonthBillsForm = (props) => {
     const [expenses, setExpenses] = useState(0.0)
     const [total, setTotal] = useState(0.0)
-    var now = new Date();
-    let dates = getAllDaysInMonth(now.getFullYear(), now.getMonth())
+    var chosenDate = props.chosenDate
+    let dates = getAllDaysInMonth(chosenDate.getFullYear(), chosenDate.getMonth())
     const [rates, setRates] = useState({ weekday: 0, weekend: 0 })
     const [monthHours, setMonthHours] = useState(createMonthHoursJson(dates, rates));
+    const [hasCreatedCarer, setHasCreatedCarer] = useState(false)
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        alert("Submitted \nClick Ok to save changes")
-        createMonthBill(monthHours, expenses, getMonthYearString(now), props.nameId)
+        createMonthBill(monthHours, expenses, getMonthYearString(chosenDate), props.nameId)
+        .then(alert("Saved Successfully")).catch("Oops Something Went Wrong. Try Again Soon")
     }
 
     useEffect(() => {
-        getBillForCarerMonth(props.nameId, getMonthYearString(now))
+        getBillForCarerMonth(props.nameId, getMonthYearString(chosenDate))
             .then(
                 (data) => {
                     if (data.id) {
@@ -90,11 +98,14 @@ export const MonthBillsForm = (props) => {
                         setExpenses(data.data.expenses)
                     }
                     else {
-                        setMonthHours(createMonthHoursJson(dates, rates))
+                        createCarerBillDoc(props.nameId, monthHours, getMonthYearString(props.chosenDate))
+                        setHasCreatedCarer(true)
                     }
                 }
             )
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [rates, hasCreatedCarer])
+
+    useEffect(() => {
         getRates().then(
             (data) => {
                 setRates(prevState => ({
@@ -105,7 +116,10 @@ export const MonthBillsForm = (props) => {
                 populateRates(dates, monthHours, data)
             }
         )
-    }, [props.nameId])
+
+
+    }, [])
+
 
     useEffect(() => {
         setTotal(getTotalPriceForMonth(monthHours, expenses))
@@ -119,24 +133,24 @@ export const MonthBillsForm = (props) => {
                 <h3>Rate</h3>
                 <h3>Day Total</h3>
             </div>
-            <form onSubmit={handleSubmit}>
-                {dates.map((date) => {
-                    const formattedDate = formatDateToString(date)
-                    return (
-                        <div style={{ clear: "both" }}>
-                            <HoursInputRow
-                                monthHours={monthHours}
-                                setMonthHours={setMonthHours}
-                                hours={monthHours[formattedDate]["hours"]}
-                                date={formattedDate}
-                                rate={monthHours[formattedDate]["rate"]}>
-                            </HoursInputRow>
-                        </div>
-                    )
-                })}
-                <ExpensesInputRow expensesTotal={expenses} setExpenses={setExpenses}></ExpensesInputRow>
-                <input type="submit"></input>
-            </form>
+            {dates.map((date) => {
+                const formattedDate = formatDateToString(date)
+                const readableDate = formatDateToDayDDMonth(date)
+                return (
+                    <div style={{ clear: "both" }}>
+                        <HoursInputRow
+                        readableDate = {readableDate}
+                            monthHours={monthHours}
+                            setMonthHours={setMonthHours}
+                            hours={monthHours[formattedDate]["hours"]}
+                            date={formattedDate}
+                            rate={monthHours[formattedDate]["rate"]}>
+                        </HoursInputRow>
+                    </div>
+                )
+            })}
+            <ExpensesInputRow expensesTotal={expenses} setExpenses={setExpenses}></ExpensesInputRow>
+            <button onClick={handleSubmit}>Submit</button>
             <h3>Total: £{total.toFixed(2)}</h3>
         </div>
     )

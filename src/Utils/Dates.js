@@ -1,7 +1,8 @@
 
 const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-var month= ["January","February","March","April","May","June","July",
-            "August","September","October","November","December"];
+var month = ["January", "February", "March", "April", "May", "June", "July",
+    "August", "September", "October", "November", "December"];
+
 export function getAllDaysInMonth(year, month) {
     const date = new Date(year, month, 1);
 
@@ -15,15 +16,42 @@ export function getAllDaysInMonth(year, month) {
     return dates;
 }
 
+export function formateDateToHolidayFormat(date) {
+    var month = date.getMonth() + 1
+    var day = date.getDate()
+    var dateStr = date.getFullYear().toString()
+
+    if (month < 10) {
+        dateStr = dateStr.concat("-", "0" ,month)
+    }
+    else {
+        dateStr = dateStr.concat("-" + month.toString())
+    }
+    if (day < 10) {
+        dateStr = dateStr.concat("-" + "0" + day.toString())
+    }
+    else{
+        dateStr = dateStr.concat("-" + day.toString())
+    }
+
+    return dateStr
+}
+
+export function formatDateToDayDDMonth(date){
+
+    return daysOfWeek[date.getDay()] + " " + date.getDate() + " " + month[date.getMonth()].slice(0, 3)
+
+}
+
 export function formatDateToString(date) {
     var formattedDate = daysOfWeek[date.getDay()] + "-"
         + date.getDate().toString() + "-"
-        + date.getMonth().toString() + "-"
+        + (date.getMonth() + 1).toString() + "-"
         + date.getFullYear().toString();
     return formattedDate;
 }
 
-export function getMonthYearString(date){
+export function getMonthYearString(date) {
     return month[date.getMonth()] + "-" + date.getFullYear().toString()
 }
 

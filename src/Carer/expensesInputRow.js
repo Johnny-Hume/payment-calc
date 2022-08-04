@@ -16,8 +16,11 @@ export function ExpensesInputRow(props) {
                 <h3>Expenses</h3>
                 <p>
                     <input
+                    maxLength={6}
+                    size={6}
+                    style={{fontSize:"20px"}}
                         type="text"
-                        value={props.expensesTotal}
+                        value={props.expensesTotal != 0 ? props.expensesTotal : ""}
                         onChange={(e) => onChange(e)}
                     />
                 </p>

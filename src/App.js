@@ -7,7 +7,6 @@ import { ControlCenter } from './Manager/ControlCenter';
 
 
 function App() {
-  const nameIds = ["py8BefwPq8", "iuTcz1Kgjn", "5Q9wneJOST", "ff9lbEHFHx", "PYQACrShek"]
   return (
     <div className="App">
       <header className="App-header">

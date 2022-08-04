@@ -2,13 +2,14 @@ import { AddCarerForm } from "./AddCarerForm"
 import { AllCarerBills } from "./AllCarerBills"
 import { UpdateRateForm } from "./UpdateRateForm"
 import { useEffect, useState } from "react"
-import { getRates } from "../Database/firestore"
+import { getChosenDate, getRates, updateDate } from "../Database/firestore"
 import { getAllDaysInMonth, getMonthYearString } from "../Utils/Dates"
+import { ChooseDateForm } from "./ChooseDateForm"
 
 export const ControlCenter = (props) => {
 
-    var now = new Date();
-    let dates = getAllDaysInMonth(now.getFullYear(), now.getMonth())
+    const [chosenDate, setChosenDate] = useState("")
+    const [dates, setDates] = useState([])
     const [rates, setRates] = useState({ weekday: 0, weekend: 0 })
 
     useEffect(() => {
@@ -21,13 +22,31 @@ export const ControlCenter = (props) => {
                 }))
             }
         )
+        getChosenDate().then(
+            (data) => {
+                const newDate = new Date(data["chosenDate"])
+                setChosenDate(newDate)
+                setDates(getAllDaysInMonth(newDate.getFullYear(), newDate.getMonth()))
+            }
+        )
     }, [])
 
+
+    if(chosenDate == ""){
+        return (
+            <div>
+                <h3>Loading</h3>
+            </div>
+        )
+    }
     return (
         <div>
-            <AddCarerForm monthYear={getMonthYearString(now)} dates={dates} rates={rates}></AddCarerForm>
+            <h1>Control Centre</h1>
+            <h2>{getMonthYearString(chosenDate)}</h2>
+            <AddCarerForm monthYear={getMonthYearString(chosenDate)} dates={dates} rates={rates}></AddCarerForm>
+            <ChooseDateForm chosenDate={chosenDate} setChosenDate={setChosenDate}></ChooseDateForm>
             <UpdateRateForm></UpdateRateForm>
-            <AllCarerBills dates={dates} rates={rates}></AllCarerBills>
+            <AllCarerBills chosenDate={chosenDate} dates={dates} rates={rates}></AllCarerBills>
         </div>
     )
 }

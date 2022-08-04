@@ -28,11 +28,14 @@ export function HoursInputRow(props) {
     return (
         <div>
             <div style={{display:"grid", gridTemplateColumns:"1fr 1fr 1fr 1fr"}}>
-            <p>{props.date}</p>
+            <p>{props.readableDate}</p>
                 <h3>
                     <input
                         type="text"
-                        value={props.hours}
+                        style={{fontSize:"20px"}}
+                        maxLength="4"
+                        size="4"
+                        value={props.hours != 0 ?props.hours : ""}
                         onChange={(e) => onChange(e)}
                     />
                 </h3>
