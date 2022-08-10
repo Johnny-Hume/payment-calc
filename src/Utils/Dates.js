@@ -44,7 +44,7 @@ export function formatDateToDayDDMonth(date){
 }
 
 export function formatDateToString(date) {
-    var formattedDate = daysOfWeek[date.getDay()] + "-"
+    var formattedDate = daysOfWeek[date.getDay() -1 ] + "-"
         + date.getDate().toString() + "-"
         + (date.getMonth() + 1).toString() + "-"
         + date.getFullYear().toString();
