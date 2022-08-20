@@ -41,7 +41,7 @@ export function formatDateToDayDDMonth(date){
     return getDayOfWeek(date) + " " + date.getDate() + " " + month[date.getMonth()].slice(0, 3)
 }
 
-function getDayOfWeek(date) {
+export function getDayOfWeek(date) {
 	let day = date.getDay() - 1
 	if(day < 0) day = 6;
 	return daysOfWeek[day]

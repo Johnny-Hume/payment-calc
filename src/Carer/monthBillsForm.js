@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { createMonthBill, getRates } from "../Database/firestore";
 import { createCarerBillDoc } from "../Database/firestore";
-import { formatDateToDayDDMonth, formateDateToHolidayFormat, getAllDaysInMonth, getMonthYearString } from "../Utils/Dates";
+import { formatDateToDayDDMonth, formateDateToHolidayFormat, getAllDaysInMonth, getDayOfWeek, getMonthYearString } from "../Utils/Dates";
 import { HoursInputRow } from "./singleBillForm";
 import { formatDateToString } from "../Utils/Dates";
 import { ExpensesInputRow } from "./expensesInputRow";
@@ -56,7 +56,7 @@ export const populateRates = (dates, monthHours, rates) => {
     let rate
     dates.forEach(date => {
         const formattedDate = formatDateToString(date)
-        if (isHoliday(date) || date.getDay() > 4) {
+        if (isHoliday(date) || ["Sat", "Sun"].includes(getDayOfWeek(date))) {
             rate = rates.weekend
         }
         else {

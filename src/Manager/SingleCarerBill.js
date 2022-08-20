@@ -17,8 +17,6 @@ const calcTotal = (hours, rate) => {
 
 export const SingleCarerBill = (props) => {
 
-
-    // const monthlyBill = props.monthlyBill["data"]
     const [monthlyBill, setMonthlyBill] = useState(props.monthlyBill["data"])
     const [name, setName] = useState("")
 
