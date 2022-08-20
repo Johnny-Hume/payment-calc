@@ -38,13 +38,16 @@ export function formateDateToHolidayFormat(date) {
 }
 
 export function formatDateToDayDDMonth(date){
-
-    return daysOfWeek[date.getDay()] + " " + date.getDate() + " " + month[date.getMonth()].slice(0, 3)
-
+    return getDayOfWeek(date) + " " + date.getDate() + " " + month[date.getMonth()].slice(0, 3)
 }
 
+function getDayOfWeek(date) {
+	let day = date.getDay() - 1
+	if(day < 0) day = 6;
+	return daysOfWeek[day]
+}
 export function formatDateToString(date) {
-    var formattedDate = daysOfWeek[date.getDay() -1 ] + "-"
+    var formattedDate = getDayOfWeek(date) + "-"
         + date.getDate().toString() + "-"
         + (date.getMonth() + 1).toString() + "-"
         + date.getFullYear().toString();
